@@ -1,0 +1,9 @@
+{
+  "name": "tree",
+  "version": "1.0.0",
+  "description": "A micro framework to use components in vanilla JS. Inspired by Vuejs and Poulet",
+  "main": "index.js",
+  "repository": "git@github.com:JeremieDrazic/tree.git",
+  "author": "Jeremie Drazic <jerem.drazic@gmail.com>",
+  "license": "MIT"
+}

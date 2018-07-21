@@ -19,7 +19,8 @@ const configs = [
       resolve(), // so Rollup can find `vendors`
       commonjs(), // so Rollup can convert `vendors` to ES modules
       babel({
-        exclude: ['node_modules/**']
+        exclude: ['node_modules/**'],
+        plugins: ['external-helpers']
       })
     ]
   },
@@ -39,7 +40,8 @@ const configs = [
     ],
     plugins: [
       babel({
-        exclude: ['node_modules/**']
+        exclude: ['node_modules/**'],
+        plugins: ['external-helpers']
       })
     ]
   }

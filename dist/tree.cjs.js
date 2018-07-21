@@ -30,6 +30,35 @@ var createClass = function () {
   };
 }();
 
+var defineProperty = function (obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+};
+
+var _extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];
+
+    for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }
+
+  return target;
+};
+
 var inherits = function (subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
     throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
@@ -144,7 +173,7 @@ function uniqId () {
   return '' + (prefix + id);
 }
 
-function forEach$1 (items, callback) {
+function forEach (items, callback) {
   if (!items) return [];
 
   if ((typeof items === 'undefined' ? 'undefined' : _typeof(items)) !== 'object' || !('length' in items)) {
@@ -160,7 +189,7 @@ function forEach$1 (items, callback) {
 function forIn (object, callback) {
   if ((typeof object === 'undefined' ? 'undefined' : _typeof(object)) !== 'object') return;
 
-  forEach$1(Object.keys(object), forKey.bind(null, object, callback));
+  forEach(Object.keys(object), forKey.bind(null, object, callback));
 
   return object;
 }
@@ -184,8 +213,6 @@ var Component = function () {
     Object.assign(this, globals);
     this.$options = options;
 
-    this.prefix = 't-';
-
     this.$id = this._generateComponentId();
 
     this.$scope = {};
@@ -198,7 +225,7 @@ var Component = function () {
   createClass(Component, [{
     key: '_generateComponentId',
     value: function _generateComponentId() {
-      return uniqId('' + this.prefix + this.option.name + '-');
+      return uniqId('' + this.$prefix + this.$options.name + '-');
     }
   }, {
     key: '_bindData',
@@ -207,7 +234,7 @@ var Component = function () {
 
       this.$data = {};
 
-      forIn(Object.keys(this.$options.data), function (key, value) {
+      forIn(this.$options.data, function (key, value) {
         // make each property in $options.data reactive,
         // by defining getters and setters dynamicly and 
         // attach it to this.$data. then we attach
@@ -222,7 +249,7 @@ var Component = function () {
     value: function _bindLifeCycle() {
       var _this2 = this;
 
-      forEcah(lifeCycleMethods, function (method) {
+      forEach(lifeCycleMethods, function (method) {
         _this2[method] = function () {
           for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
             args[_key] = arguments[_key];
@@ -241,7 +268,7 @@ var Component = function () {
 
       this.methods = {};
 
-      forIn(Object.keys(this.$options.methods), function (name, callback) {
+      forIn(this.$options.methods, function (name, callback) {
         _this3.$methods[name] = callback.bind(_this3);
       });
 
@@ -274,6 +301,19 @@ var Component = function () {
   return Component;
 }();
 
+function kebabCase (string) {
+  return string.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+}
+
+// globals are accessible throughout all components
+var defaultGlobals = {
+  $prefix: 't-'
+};
+
+var defaultOptions = {
+  name: 'root'
+};
+
 var Tree = function (_Component) {
   inherits(Tree, _Component);
 
@@ -282,18 +322,48 @@ var Tree = function (_Component) {
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
     classCallCheck(this, Tree);
 
-    // globals = {...defaultGlobals, ...globals}
-    // options = {...defaultOptions, ...options}
+    globals = _extends({}, defaultGlobals, globals);
+    options = _extends({}, defaultOptions, options);
 
-    return possibleConstructorReturn(this, (Tree.__proto__ || Object.getPrototypeOf(Tree)).call(this, globals, options));
+    var _this = possibleConstructorReturn(this, (Tree.__proto__ || Object.getPrototypeOf(Tree)).call(this, globals, options));
+
+    console.log('globals', globals);
+    console.log('options', options);
+
+    _this.$components = defineProperty({}, _this.$id, _this);
+
+    // assign globals to the Core object
+    _this.$globals = _extends({}, globals, options, {
+      $root: _this,
+      $components: _this.$components
+    });
+
+    _this.$globals.$marker = _this.$marker = '_' + _this.$prefix + 'id';
+
+    _this._components = [];
+
+    console.log('Tree', _this);
+    return _this;
   }
 
   createClass(Tree, [{
-    key: 'domChanged',
-    value: function domChanged() {
-      console.log('trololololololo');
-      console.log(this.observer.listeners);
+    key: 'component',
+    value: function component(name, options) {
+      name = kebabCase(name);
+
+      var selector = 'selector' in options ? options.selector : '[' + this.$prefix + 'id]';
+
+      this._components.push({
+        selector: selector,
+        options: _extends({
+          name: name,
+          selector: selector
+        }, options)
+      });
     }
+  }, {
+    key: 'domChanged',
+    value: function domChanged() {}
   }]);
   return Tree;
 }(Component);

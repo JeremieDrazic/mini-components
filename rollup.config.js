@@ -9,11 +9,11 @@ const env = process.env.NODE_ENV
 const configs = [
   // browser-friendly UMD build
   {
-    input: 'lib/Tree.js',
+    input: 'lib/Whale.js',
     output: {
       file: pkg.browser,
       format: 'umd',
-      name: 'Tree'
+      name: 'Whale'
     },
     plugins: [
       resolve(), // so Rollup can find `vendors`
@@ -27,7 +27,7 @@ const configs = [
 
   // CommonJS (for Node) and ES module (for bundlers) build.
   {
-    input: 'lib/Tree.js',
+    input: 'lib/Whale.js',
     output: [
       {
         file: pkg.main,

@@ -1,11 +1,11 @@
 {
-  "name": "tree",
+  "name": "whale",
   "version": "1.0.0",
   "description": "A micro framework to use components in vanilla JS. Inspired by Vuejs and Poulet",
-  "main": "dist/tree.cjs.js",
-  "module": "dist/tree.esm.js",
-  "browser": "dist/tree.umd.js",
-  "repository": "git@github.com:JeremieDrazic/tree.git",
+  "main": "dist/whale.cjs.js",
+  "module": "dist/whale.esm.js",
+  "browser": "dist/whale.umd.js",
+  "repository": "git@github.com:JeremieDrazic/whale.git",
   "author": "Jeremie Drazic <jerem.drazic@gmail.com>",
   "license": "MIT",
   "files": [

@@ -9,7 +9,7 @@ const env = process.env.NODE_ENV
 const configs = [
   // browser-friendly UMD build
   {
-    input: 'lib/Whale.js',
+    input: 'lib/index.js',
     output: {
       file: pkg.browser,
       format: 'umd',
@@ -27,7 +27,7 @@ const configs = [
 
   // CommonJS (for Node) and ES module (for bundlers) build.
   {
-    input: 'lib/Whale.js',
+    input: 'lib/index.js',
     output: [
       {
         file: pkg.main,
